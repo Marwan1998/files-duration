@@ -1,0 +1,32 @@
+const fs = require("fs");
+const { getVideoDurationInSeconds } = require("get-video-duration");
+
+// const pathName = "C:/Users/Vendetta/Desktop/renameFolder/";
+const pathName = "renameFolder/";
+
+const readFilesFromDir = (callback) => {
+  let durSum = 0;
+  fs.readdir(pathName, async (err, files) => {
+    if (!err) {
+      for (const file of files) {
+        const fullPath = pathName + file;
+        await getVideoDurationInSeconds(fullPath).then((duration) => {
+          durSum += duration;
+          console.log("durSum inside the methode: " + durSum);
+        });
+      }
+      callback(durSum, null);
+    } else {
+      callback(0, err);
+    }
+  });
+}
+
+readFilesFromDir((sum, err) => {
+  if (err) {
+    console.error("Could not do it", err);
+    process.exit(1);
+  } else {
+    console.log("duration Sum is: " + sum);
+  }
+});
